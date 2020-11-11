@@ -1,3 +1,5 @@
+#ifndef __EQUATION_HPP__
+#define __EQUATION_HPP__
 #include<ostream>
 #include<vector>
 #include<cmath>
@@ -23,10 +25,9 @@ namespace Chronos {
 
     class Equation {
         private:
-        std::string m_equation, m_postfix_eqn, m_replaced_eqn;
+        std::string m_equation;
         std::vector<Term> m_variables;
-        void GetVariables(){
-            m_replaced_eqn = "";
+        void SetVariables(){
             std::string pre_ope = "+", temp_eqn = m_equation + "=";
             for(int i = 0, start = 0; i < temp_eqn.size(); i++){
                 std::string variable;
@@ -62,71 +63,30 @@ namespace Chronos {
                     if(pre_ope == "-")
                         m_variables.back().co_efficient *= -1;
                     //Replace with index
-                    if(temp_eqn[i] == '=')
-                        m_replaced_eqn += std::to_string(m_variables.size() - 1);
-                    else if(temp_eqn[i] == '-'){
+                    if(temp_eqn[i] == '-')
                         pre_ope = "-";
-                        m_replaced_eqn += std::to_string(m_variables.size() - 1) + "+";
-                    }
-                    else{
+                    else
                         pre_ope = "+";
-                        m_replaced_eqn += std::to_string(m_variables.size() - 1) + "+";
-                    }
                 }
-            }
-        }
-        void ToPostfix(){
-            m_postfix_eqn = "";
-            std::vector<std::string> stack;
-            int start = 0;
-            for(int i = 0; i < m_replaced_eqn.size(); i++){
-                if (m_replaced_eqn[i] == '+'){
-                    m_postfix_eqn += m_replaced_eqn.substr(start, i - start) + "'";
-                    start = i + 1;
-                    while(!stack.empty()){
-                        m_postfix_eqn += stack.back();
-                        stack.pop_back();
-                    }
-                    stack.emplace_back("+");
-                }
-            }
-            m_postfix_eqn += m_replaced_eqn.substr(start) + "'";
-            while(!stack.empty()){
-                m_postfix_eqn += stack.back();
-                stack.pop_back();
             }
         }
         public:
         Equation(const char* eqn) : m_equation(std::move(eqn)){
-            GetVariables();
-            ToPostfix();
+            SetVariables();
         }
         Equation(std::string eqn) : m_equation(eqn){
-            GetVariables();
-            ToPostfix();
+            SetVariables();
         }
 
         double Answer(double x){
-            std::vector<double> stack;
-            int start = 0;
-            for(int i = 0; i < m_postfix_eqn.size(); i++){
-                if(m_postfix_eqn[i] == '\''){
-                    std::string index = m_postfix_eqn.substr(start, i - start);
-                    stack.emplace_back(m_variables[std::stoi(index)] * x);
-                    start = i + 1;
-                }
-                else if (m_postfix_eqn[i] == '+'){
-                    start = i + 1;
-                    double var1 = stack.back();
-                    stack.pop_back();
-                    double var2 = stack.back();
-                    stack.pop_back();
-                    stack.emplace_back(var2 + var1);
-                }
-            }
-            return stack.back();
+            double total = 0;
+            for(Term i : m_variables)
+                total += i * x;
+            return total;
         }
 
         inline std::string GetEqn() { return m_equation; }
+        inline std::vector<Term> GetVariables() { return m_variables; }
     };
 }
+#endif

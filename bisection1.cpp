@@ -1,8 +1,7 @@
 #include<iostream>
-#include"Equation.hpp"
+#include"Bisection.hpp"
 int main(){
-    Chronos::Equation eq = "x^2-4x-10";
-    std::cout << eq.GetEqn() << "\n";
-    std::cout << eq.Answer(-1.6875);
+    Chronos::Bisection bs = "x^2-4x-10";
+    bs.FindRoot();
     return 0;
 }
