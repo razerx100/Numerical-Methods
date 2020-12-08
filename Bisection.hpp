@@ -48,6 +48,7 @@ namespace Chronos {
                     f_x0 *= -1;
             }
             fout << "Approximate root is " << x0 << "\n";
+            fout.close();
         }
     };
 }
