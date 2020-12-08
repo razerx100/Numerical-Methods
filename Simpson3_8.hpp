@@ -1,10 +1,10 @@
-#ifndef __SIMPSON_1_3_HPP__
-#define __SIMPSON_1_3_HPP__
+#ifndef __SIMPSON_3_8_HPP__
+#define __SIMPSON_3_8_HPP__
 #include<fstream>
 #include<iostream>
 #include"Equation.hpp"
 namespace Chronos {
-    class Simpson1_3 {
+    class Simpson3_8 {
     private:
         Equation eqn;
         int ite_num;
@@ -13,7 +13,7 @@ namespace Chronos {
             ite_num = (upper_bound - lower_bound) / h_val;
         }
     public:
-        Simpson1_3(std::string eqn) : eqn(eqn) {
+        Simpson3_8(std::string eqn) : eqn(eqn) {
             std::cout << "Value of h : ";
             std::cin >> h_val;
             std::cout << "Lower limit and Upper limit : ";
@@ -35,25 +35,25 @@ namespace Chronos {
                 values[i] = lower_bound + i * ((upper_bound - lower_bound) / ite_num);
                 fout << "x" << i << " = " << values[i] << " ";
             }
-            fout << "\nI = ((b - a) / 3n)[f(x0)";
+            fout << "\nI = (3(b - a) / 8n)[f(x0)";
             for(int i = 1; i < ite_num; i++){
-                if(i & 1)
-                    fout << "+" << 4 << "f(x" << i << ")";
-                else
+                if((i + 1) % 4 == 0)
                     fout << "+" << 2 << "f(x" << i << ")";
+                else
+                    fout << "+" << 3 << "f(x" << i << ")";
             }
             fout << "+f(x" << ite_num << ")" <<"]\n";
-            fout << "\n  = ((" << upper_bound << " - " << lower_bound << ") / " << "3 * " << ite_num << ")[f(" << values[0] << ")";
-            double answer = (upper_bound - lower_bound) / (3 * ite_num);
+            fout << "\n  = (3(" << upper_bound << " - " << lower_bound << ") / " << "8 * " << ite_num << ")[f(" << values[0] << ")";
+            double answer = (3 * (upper_bound - lower_bound)) / (8 * ite_num);
             double sum = eqn.Answer(values[0]);
             for(int i = 1; i < ite_num; i++){
-                if(i & 1){
-                    sum += (4 * eqn.Answer(values[i]));
-                    fout << "+4f(" << values[i] << ")";
-                }
-                else{
+                if((i + 1) % 4 == 0){
                     sum += (2 * eqn.Answer(values[i]));
                     fout << "+2f(" << values[i] << ")";
+                }
+                else{
+                    sum += (3 * eqn.Answer(values[i]));
+                    fout << "+3f(" << values[i] << ")";
                 }
             }
             sum += eqn.Answer(values[ite_num]);

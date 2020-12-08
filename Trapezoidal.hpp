@@ -8,16 +8,25 @@ namespace Chronos {
     private:
         Equation eqn;
         int trape_nums;
-        double lower_bound, upper_bound;
+        double lower_bound, upper_bound, h_val;
+        inline void get_trape_nums(){
+            trape_nums = (upper_bound - lower_bound) / h_val;
+        }
     public:
         Trapezoidal(std::string eqn) : eqn(eqn) {
-            std::cout << "Number of trapezoidals : ";
-            std::cin >> trape_nums;
+            std::cout << "Value of h : ";
+            std::cin >> h_val;
             std::cout << "Lower limit and Upper limit : ";
             std::cin >> lower_bound >> upper_bound;
+            if(h_val <= 0){
+                std::cout << "Number of iterations : ";
+                std::cin >> trape_nums;
+            }
+            else
+                get_trape_nums();
         }
         void Answer(){
-            std::fstream fout;
+            std::ofstream fout;
             fout.open("Results.txt");
             fout << "Xi = a + i ((b - a) / n)     I = (" << eqn.GetEqn() << ") dx\n";
             fout << "a = " << lower_bound << ", b = " << upper_bound << " and n = " << trape_nums << ".\n";
