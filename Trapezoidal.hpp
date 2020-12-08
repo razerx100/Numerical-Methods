@@ -19,6 +19,7 @@ namespace Chronos {
         void Answer(){
             std::fstream fout;
             fout.open("Results.txt");
+            fout << "Xi = a + i ((b - a) / n)     I = (" << eqn.GetEqn() << ") dx\n";
             fout << "a = " << lower_bound << ", b = " << upper_bound << " and n = " << trape_nums << ".\n";
             double values[trape_nums + 1];
             for(int i = 0; i <= trape_nums; i++){
